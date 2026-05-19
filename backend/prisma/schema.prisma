@@ -41,15 +41,15 @@ model MutualFund {
   @@map("mutual_funds")
 }
 
-model MutualFundPrice {
-  id           String     @id @default(uuid())
-  mutualFundId String
-  month        DateTime
-  price        Float
-  createdAt    DateTime   @default(now())
-  mutualFund   MutualFund @relation(fields: [mutualFundId], references: [id], onDelete: Cascade)
+  model MutualFundPrice {
+    id           String     @id @default(uuid())
+    mutualFundId String
+    month        DateTime
+    price        Float
+    createdAt    DateTime   @default(now())
+    mutualFund   MutualFund @relation(fields: [mutualFundId], references: [id], onDelete: Cascade)
 
-  @@unique([mutualFundId, month])
-  @@index([mutualFundId])
-  @@map("mutual_fund_prices")
-}
+    @@unique([mutualFundId, month])
+    @@index([mutualFundId])
+    @@map("mutual_fund_prices")
+  }
