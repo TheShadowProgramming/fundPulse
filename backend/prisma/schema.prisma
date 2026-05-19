@@ -1,0 +1,55 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String       @id @default(uuid())
+  email                String       @unique
+  password             String
+  firstName            String
+  lastName             String
+  phone                String?
+  hasCompletedTutorial Boolean      @default(false)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  mutualFunds          MutualFund[]
+
+  @@map("users")
+}
+
+model MutualFund {
+  id             String            @id @default(uuid())
+  userId         String
+  name           String
+  category       String            @default("Equity")
+  entryPrice     Float
+  currentPrice   Float
+  units          Float
+  investedAmount Float
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  prices         MutualFundPrice[]
+
+  @@index([userId])
+  @@map("mutual_funds")
+}
+
+model MutualFundPrice {
+  id           String     @id @default(uuid())
+  mutualFundId String
+  month        DateTime
+  price        Float
+  createdAt    DateTime   @default(now())
+  mutualFund   MutualFund @relation(fields: [mutualFundId], references: [id], onDelete: Cascade)
+
+  @@unique([mutualFundId, month])
+  @@index([mutualFundId])
+  @@map("mutual_fund_prices")
+}
